@@ -8,6 +8,9 @@ namespace UtilityTest
     public class VectorUnitTest
     {
 
+        /// <summary>
+        /// Test addition and subtraction with vectors using three distinct tests
+        /// </summary>
         [TestMethod]
         public void TestAddSubtract()
         {
@@ -27,6 +30,9 @@ namespace UtilityTest
             }
         }
 
+        /// <summary>
+        /// Test multiplication and division with vectors using three distinct tests
+        /// </summary>
         [TestMethod]
         public void TestMultDiv()
         {
@@ -45,6 +51,9 @@ namespace UtilityTest
             }
         }
 
+        /// <summary>
+        /// Test magnitude calculation with vectors using three distinct tests
+        /// </summary>
         [TestMethod]
         public void TestMagnitude()
         {
@@ -59,6 +68,9 @@ namespace UtilityTest
             }
         }
 
+        /// <summary>
+        /// Test cross product calculation with vectors using three distinct tests
+        /// </summary>
         [TestMethod]
         public void TestCross()
         {
@@ -75,6 +87,9 @@ namespace UtilityTest
             }
         }
 
+        /// <summary>
+        /// Test unit vector calculation with vectors using three distinct tests
+        /// </summary>
         [TestMethod]
         public void TestUnit()
         {
@@ -91,6 +106,9 @@ namespace UtilityTest
             }
         }
 
+        /// <summary>
+        /// Test equality operations with vectors using four distinct tests
+        /// </summary>
         [TestMethod]
         public void TestEquality()
         {
