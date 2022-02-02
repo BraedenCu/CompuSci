@@ -21,16 +21,9 @@ namespace Homework_2._3_Classes
             v = initialVelocity;
             a = initialAcceleration;
         }
-        /*
-        public void UpdateAcceleration(Vector Acceleration)
-        {
-            a = Acceleration;
-        }
-        */
         public void UpdateVelocity(double Dt)
         {
             v += (a * Dt);
-            Console.WriteLine(v);
         }
         public void UpdatePosition(double Dt)
         {
@@ -40,7 +33,7 @@ namespace Homework_2._3_Classes
 
         public void PrintComponents()
         {
-            Console.WriteLine(p);
+            Console.WriteLine(p + "" + v + "" + a + "");
         }
 
     }
