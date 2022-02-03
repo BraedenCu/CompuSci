@@ -11,14 +11,14 @@ namespace Homework_2._3_Classes
     {
         public Vector fGrav, fAir, fSpring, fNet;
         public List<Projectile> projectiles;
-        public double aG = -9.8;
-        public bool airRes;
-        public bool springRes;
-        public double simTime;
-        double C = 0.5;
-        public double dt;
-        //Ground???
-
+        public Vector ground = new Vector(0, 0, 0);
+        public Vector aG = new Vector(0, 0, -9.8); //acceleration due to gravity
+        public bool airRes, springRes;
+        public double simTime, dt;
+        public double springConst, C, unstretchedLength;
+        public double finalSt; //final time when spring speed = 1m/s
+        
+        //default constructor
         public World(double time, double dt, List<Projectile> projectiles, bool airRes, bool springRes)
         {
             this.dt = dt;
@@ -27,21 +27,21 @@ namespace Homework_2._3_Classes
             this.airRes = airRes;
             this.springRes = springRes;
         }
+        //constructor for air resistence values (will only run if they are passed)
+        public World(double time, double dt, List<Projectile> projectiles, bool airRes, bool springRes, double C, double unstretchedLength, double springConst)
+        {
+            this.dt = dt;
+            simTime = time;
+            this.projectiles = projectiles;
+            this.airRes = airRes;
+            this.springRes = springRes;
+            this.C = C;
+            this.unstretchedLength = unstretchedLength; 
+            this.springConst = springConst;
+        }
 
         public void CalculateForces(Projectile p) {
-            //temporarily adding these to calculate spring force
-            double springConst = 8;
-            double unstretchedLength = 2;
-            double fSpringMag = 0;
-            Vector displacement = new Vector(0, 0, 0);
-            Vector springPosition = new Vector(0, 0, unstretchedLength); //initial position of spring 
-
-
-            fGrav = new Vector(
-                0 * p.mass,                           //force of gravity in the X direction
-                0 * p.mass,                           //force of gravity in the Y direction
-                aG * p.mass                           //force of gravity in the Z direction
-            );
+            fGrav = aG * p.mass;
             if (airRes)
             {
                 fAir = new Vector(
@@ -49,22 +49,18 @@ namespace Homework_2._3_Classes
                     C * p.v.Y * p.v.Y * Math.Sign(p.v.Y),
                     C * p.v.Z * p.v.Z * Math.Sign(p.v.Z)
                 );
-
-
                 if (springRes && p.p.Magnitude()!=0)
                 {
-                    //displacement = p.p - springPosition; //magnitude of displacement from spring original position to position vector. -2 because that is initial spring length
-                    //fSpring = springConst * -1 * displacement;
-                    //Console.WriteLine(p.p.X);
-                    fSpring = -1 * springConst * (p.p.Magnitude() - 2) * p.p.UnitVector(p.p);
-                    Console.WriteLine(p.p.Magnitude());
+                    fSpring = -1 * springConst * (p.p.Magnitude() - unstretchedLength) * p.p.UnitVector(p.p);
+                    //Console.WriteLine(p.p.Magnitude());
                 }
-                else { fSpring = new Vector(0, 0, 0);}
-
-
-
+                else { 
+                    fSpring = new Vector(0, 0, 0);
+                }
             }
-            else { fAir = new Vector(0, 0, 0); }
+            else { 
+                fAir = new Vector(0, 0, 0); 
+            }
             fNet = (fGrav - fAir) + fSpring;
         }
 
@@ -74,20 +70,35 @@ namespace Homework_2._3_Classes
         }
 
         public void Simulate() { //main function
-            for(double i = 0; i < simTime; i+=dt)
+            for(double i = 0; i < simTime ; i+=dt)
             {
-                for(int x = 1; x < projectiles.Count; x++) //x = 1 JUST FOR TESTING
+                for(int x = 0; x < projectiles.Count; x++)
                 {
-                    Console.Write(i + "\t");
                     CalculateForces(projectiles[x]);
                     ApplyForces(projectiles[x]);
                     projectiles[x].UpdatePosition(dt);
-                    if (x==1) //ONLY FOR TESTING
+                    projectiles[x].PrintComponents(i);
+
+                    //specific to levels one and two. End simulation if projectile hits ground
+                    if (springRes == false && ground.Z >= projectiles[x].p.Z)
                     {
-                        //projectiles[x].PrintComponents();
-                        //Console.WriteLine(i + "\t" + projectiles[x].v);
+                        //object has hit ground, exit loop. setting i to simtime ends loop. 
+                        i = simTime; 
+                    }
+                    //specific to level three. Checking if the projectile speed is 1 m/s (within two decimal places). It then saves that time for future reference
+                    else
+                    {
+                        if (Math.Round(projectiles[x].v.Magnitude(), 2) == 1)
+                        {
+                            finalSt = i;
+                        }
                     }
                 }
+            }
+            //print the final time the projectile reached 1m/s if running level three
+            if (springRes == true)
+            {
+                Console.WriteLine("The final time the projectile reached a speed of 1m/s was at: " + finalSt);
             }
         }
     }

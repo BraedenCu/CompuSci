@@ -31,9 +31,9 @@ namespace Homework_2._3_Classes
             p += v * Dt;
         }
 
-        public void PrintComponents()
+        public void PrintComponents(double t)
         {
-            Console.WriteLine(p + "" + v + "" + a + "");
+            Console.WriteLine(t + "\t" + p + "\t" + v + "\t" + a);
         }
 
     }
